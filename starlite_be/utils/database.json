@@ -1,0 +1,40 @@
+{
+  "TEST": true,
+  "CZ1105": {
+    "Course name": "CZ1105 DIGITAL LOGIC",
+    "10453": [
+      [
+        "Lec/Studio",
+        "SCL1",
+        "Mon",
+        "0830to0920",
+        "LT19A",
+        ""
+      ],
+      [
+        "Lec/Studio",
+        "SCL1",
+        "Thu",
+        "1630to1720",
+        "LT2A",
+        ""
+      ],
+      [
+        "Tut",
+        "FCEA",
+        "Fri",
+        "1630to1720",
+        "TR+31",
+        ""
+      ],
+      [
+        "Lab",
+        "FCEA",
+        "Mon",
+        "1430to1620",
+        "HWLAB3",
+        ""
+      ]
+    ]
+  }
+}

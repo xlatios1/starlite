@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./starlite_be/*",
+        "./starlite_fe/*"
+    ]
+}
