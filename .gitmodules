@@ -1,0 +1,3 @@
+[submodule "starlite_fe"]
+	path = starlite_fe
+	url = https://github.com/xlatios1/starlite-fe.git
