@@ -22,7 +22,14 @@ Here's a quick guide to navigate through the different parts of the project and 
 
     ```
 
-2. **Navigate to the individual components** 
+2. **Clone the submodule starlite_fe**
+   Use the following command to clone this repository:
+    ```
+    git submodule init
+    git submodule update
+    ```
+
+3. **Navigate to the individual components** 
    
     As described above, each major component has its own directory. Visit each of them for specific instructions on how to get started with that component:
 

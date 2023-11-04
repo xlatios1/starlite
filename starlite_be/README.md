@@ -47,5 +47,3 @@ Starlite Backend holds the algorithm used to support the platform. <WIP>
     ```
     uvicorn server_api:app --host localhost --port 5000
     ```
-
-2. Navigate to the frontend application URL (starlite_fe) to start using!~
