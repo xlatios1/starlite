@@ -18,12 +18,13 @@ class Encryption():
         return os.path.exists(self._encrypted_path)
 
     def remove_saved_datas(self):
-        try:
-            os.remove(self._encrypted_path)
-            print(f"encryption file removed successfully.")
-        except:
-            print("Error faced on removing encryption file. Do check if it is removed.")
-            return False
+        if self.check_if_exists():
+            try:
+                os.remove(self._encrypted_path)
+                print(f"encryption file removed successfully.")
+            except:
+                print("Error faced on removing encryption file. Do check if it is removed.")
+                return False
         return True
     
     # Function to encrypt data and save it
