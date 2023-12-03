@@ -2,6 +2,7 @@ from selenium.webdriver.support.expected_conditions import visibility_of_element
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 class BasePage(object):
     def __init__(self, driver:WebDriver):
@@ -9,14 +10,12 @@ class BasePage(object):
         self.wait = WebDriverWait(self.driver, 20)
         self.original_window = None
     
-    def open_course(self, url, page):
+    def open_url(self, url):
         self.original_window = self.driver.window_handles[0]
         self.driver.execute_script("window.open('', '_blank');")
         self.driver.switch_to.window(self.driver.window_handles[-1]) # The last item in the list is the new window
         self.driver.get(url)
-        self.find_element(By.XPATH, "//*[contains(@href,'javascript:view_subject')]").click()
-        self.driver.switch_to.window(self.driver.window_handles[-1])
-        return page(self.driver)
+        return self.driver
 
     def go_original_window(self):
         self.driver.switch_to.window(self.original_window)
@@ -28,7 +27,6 @@ class BasePage(object):
                 self.driver.switch_to.window(window)
                 self.driver.close()
         return self.go_original_window()
-
         
     def find_element(self, by, identifier):
         return self.driver.find_element(by, identifier)
