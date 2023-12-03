@@ -27,7 +27,6 @@ def get_course_data(courses:list, database:Local_DB, _encryption:Encryption, deb
             ...
         # while not starspage.login(encryption_key):
         #     driver.get('https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main')
-        #     username, password = "C200204", "Crystal1_"
         course_datas, course_not_found = starspage.get_data(new_course)
         database.update_db(course_datas, course_not_found)
         starspage.driver.quit()
