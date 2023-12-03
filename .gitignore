@@ -1,0 +1,5 @@
+# .gitignore
+helpful.txt
+*__pycache__
+starlite_be/chromedriver/chromedriver.exe
+.ipynb_checkpoints

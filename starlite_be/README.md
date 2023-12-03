@@ -21,23 +21,18 @@ Starlite Backend holds the algorithm used to support the platform. <WIP>
 
 2. Create a new virtual environment in the cloned directory. 
    ```
-   python3 -m venv env
+   conda create -n starlite_env
    ```
 
 3. Activate the virtual environment. 
-   For macOS:
    ```
-   source env/bin/activate
-   ```
-   For Windows (using Command Prompt):
-   ```
-   env\Scripts\activate
+   conda activate starlite_env
    ```
 
 4. Install the required dependencies:
 
     ```
-    pip install -r requirements.txt
+    conda env update --file environment.yml --prune
     ```
 
 ## Usage
