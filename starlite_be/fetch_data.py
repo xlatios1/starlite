@@ -1,49 +1,80 @@
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.options import Options
-from pages.StarsPage import StarsPage
-from utils import *
-from tools import *
-import os
+import requests
+from re import findall
+from datetime import timedelta, datetime
 
-def launch_chrome(debugged=False):
-    chrome_options = Options()
-    if not debugged: chrome_options.add_argument("--headless")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation", 'enable-logging'])
-    chrome_path = '\\'.join(os.path.dirname(__file__).split("\\")[:-1]) + '\\starlite_be\\chromedriver\\chromedriver.exe'
-    driver = Chrome(executable_path=chrome_path, options=chrome_options)
-    driver.get('https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main')
-    return StarsPage(driver)
+class FetchData():
+    def __init__(self):
+        ...
+    
+    def get_courses(self, course_list):
+        datas = {}
+        for course in course_list:
+            datas.update(self.get_course(course))
+        return datas
+    
+    def get_course(self, course_code):
+        GET_COURSE_DETAILS_URL = "https://backend.ntusu.org/modsoptimizer/course_code/"
+        data = requests.get(url = GET_COURSE_DETAILS_URL + course_code + '/').json()
+        def get_course_name(data):
+            return ' '.join([data["code"],data['name']])
+        def get_exam_schedule(data):
+            exam_schedule = data['get_exam_schedule']
+            if exam_schedule:
+                datetime = ' '.join([self._convert_date(exam_schedule["date"]), exam_schedule['time'].replace("-",'to').replace(":",""),'hrs'])
+                parsed_data = self._convert_time(exam_schedule['time'].replace("-",'to').replace(":",""))
+                return [datetime, parsed_data]
+            else:
+                return ['Not Applicable']
+        def get_fixed_class(data):
+            fc = []
+            for c in data['get_common_information']:
+                fc.append(self._convert_info(c))
+            return fc
+        def get_course_indexes(data):
+            ci = {}
+            for i in data['indexes']:
+                ci.update({str(i['index']) : [self._convert_info(d) for d in i['get_information']]})
+            return ci
+        
+        return {get_course_name(data): {
+            'Exam Schedule': get_exam_schedule(data),
+            'Fixed Class': get_fixed_class(data),
+            'Indexes': get_course_indexes(data)
+        }}
+    
+    def _convert_info(self, info:list):
+        return [info['type'].title(),
+                info['group'],
+                info['day'].title(),
+                info['time'].replace("-",'to'),
+                info["venue"],
+                info['remark'],
+                [self._convert_date_to_int(info['day'].title()),
+                    self._convert_time(info['time'].replace("-",'to')),
+                    self._convert_remarks(info['remark'])]
+                ]
+    
+    def _convert_time(self, info:str):
+        '''Expects input to be hhmmtohhmm, else returns None'''
+        if info[4:6] == "to": return [timedelta(hours=int(c_time[:2]), minutes=int(c_time[2:])).total_seconds() 
+                                      for c_time in info.strip().split("to")]
+        else: return None
+        
+    def _convert_date_to_int(self, info:str):
+        '''Expects input to be ddd'''
+        days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+        return days.index(info.strip())
 
-def get_course_data(courses:list, database:Local_DB, _encryption:Encryption, debugged=False):
-    assert database.data['TEST']
-    courses = [course.upper() for course in courses]
-    new_course = database.which_data_not_exists(courses)
-    course_not_found = []
-    if new_course:
-        starspage = launch_chrome(debugged)
-        try:
-            starspage.login(*_encryption.decrypt_data().split(','))
-        except:
-            ...
-        # while not starspage.login(encryption_key):
-        #     driver.get('https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main')
-        course_datas, course_not_found = starspage.get_data(new_course)
-        database.update_db(course_datas, course_not_found)
-        starspage.driver.quit()
-    return database.query_database(courses)
+    def _convert_date(self, info:str):
+        return datetime.strptime(info, "%Y-%m-%d").strftime("%d-%b-%Y")
 
-def validate_account_info(username, password):
-    starspage = launch_chrome(debugged=True)
-    state = starspage.login(username, password)
-    starspage.driver.quit()
-    return state
-
-if __name__ == "__main__":
-    ldb = Local_DB()
-    # ldb.reset()
-    inputs = ['CZ4045','CZ3005','CZ4023','CZ4042','CZ4041']
-    info, not_found = get_course_data(inputs, ldb,'' ,debugged=True)
-    opt = Optimizer(info)
-    results = opt.generate_timetable(topn=5)
-    assert len(results) == 5
-    pass
+    def _convert_remarks(self, info:str):
+        weeks = findall("Wk.*", info)
+        if weeks: # Ensure that the remarks are refering to the weeks and not otherwise, default all
+            week_detail = weeks[0][2:].split("-")
+            if len(week_detail) > 1: # Refers to e.g. "Wk1-10"
+                return [i for i in range(int(week_detail[0]), int(week_detail[1])+1)]
+            else: # Refers to "Wk3,5,7,9,11,13"
+                return [int(i) for i in week_detail[0].split(",")]
+        else: # In default, refers to every week
+            return []

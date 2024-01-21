@@ -1,5 +1,4 @@
 # from utils.convert_data_details import convert_data_details
-from numpy import dot
 from copy import deepcopy
 
 class Optimizer():
