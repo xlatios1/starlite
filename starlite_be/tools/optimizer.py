@@ -63,16 +63,6 @@ class Optimizer():
         def get_acronym(course_title):
             tokens = course_title.split(' ')
             return f"{tokens[0]}({''.join([text[0] for text in tokens[1:]])})"
-        # search = [[item[0],list(set(index[:5] for index in item[1]))] for item in self.all_combinations[:topn]]
-        # pair_ = {}
-        # for idx, options in enumerate(search):
-        #     temp = []
-        #     for course_title in options[0][0]:
-        #         for index in options[1]:
-        #             if index in list(self._data[course_title]['Indexes'].keys()):
-        #                 temp.append([course_title, index])
-        #                 break
-        #     pair_[idx] = temp,[conflict_course for conflict_course in options[0][1]]
         results = {}
         for idx, item in enumerate(self.all_combinations[:topn]):
             initialize_parsed_data = [[[] for _ in range(16)] for _ in range(7)]  

@@ -71,10 +71,14 @@ class FetchData():
     def _convert_remarks(self, info:str):
         weeks = findall("Wk.*", info)
         if weeks: # Ensure that the remarks are refering to the weeks and not otherwise, default all
-            week_detail = weeks[0][2:].split("-")
-            if len(week_detail) > 1: # Refers to e.g. "Wk1-10"
-                return [i for i in range(int(week_detail[0]), int(week_detail[1])+1)]
-            else: # Refers to "Wk3,5,7,9,11,13"
-                return [int(i) for i in week_detail[0].split(",")]
+            accumulator = []
+            for week in weeks[0][2:].split(","):
+                week_detail = week.split("-")
+                if len(week_detail) > 1: # Refers to e.g. "Wk1-10"
+                    accumulator+=[i for i in range(int(week_detail[0]), int(week_detail[1])+1)]
+                else: # Refers to "Wk3,5,7,9,11,13"
+                    accumulator+=[int(i) for i in week_detail[0].split(",")]
+            return accumulator
         else: # In default, refers to every week
             return []
+        
