@@ -55,9 +55,9 @@ class ValidateCourses(BaseModel):
 #     except:
 #         return False
 
-@app.post("/validate_courses")
-async def validate_courses(request_data: ValidateCourses):
-    return get_course_text(request_data.course_lists, get_name=True)
+# @app.post("/validate_courses")
+# async def validate_courses(request_data: ValidateCourses):
+#     return get_course_text(request_data.course_lists, get_name=True)
     
 @app.post("/get_timetable_plan")
 async def get_timetable_plan(request_data: TimetableRequest):
