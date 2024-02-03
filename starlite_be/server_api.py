@@ -55,9 +55,9 @@ class ValidateCourses(BaseModel):
 #     except:
 #         return False
 
-@app.post("/validate_courses")
-async def validate_courses(request_data: ValidateCourses):
-    return get_course_text(request_data.course_lists)
+# @app.post("/validate_courses")
+# async def validate_courses(request_data: ValidateCourses):
+#     return get_course_text(request_data.course_lists, get_name=True)
     
 @app.post("/get_timetable_plan")
 async def get_timetable_plan(request_data: TimetableRequest):
@@ -65,9 +65,13 @@ async def get_timetable_plan(request_data: TimetableRequest):
     course_list = get_course_text(request_data.course_lists)
     print("Received:" ,request_data.course_lists, "Parsed valid:", course_list)
     course_data = FetchData().get_courses(course_list)
+    print(course_list)
     opt = Optimizer(course_data)
+    print("Done 1")
     data = opt.generate_timetable(topn=request_data.topn)
+    print("Done 2")
     data.update({"validCourses": course_list})
+    print("Done 3")
     return data
     
 @app.post("/handle_clean_up")
