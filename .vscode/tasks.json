@@ -20,9 +20,18 @@
 			}
 		},
 		{
-			"label": "Git Commit",
+			"label": "Git Commit FE",
 			"type": "shell",
-			"command": "cd starlite_fe; git commit -a -m 'Update'; git push; cd ..; cd starlite_be; git commit -a -m 'Update'; git push",
+			"command": "cd starlite_fe; git commit -a -m 'Update'; git push",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+		{
+			"label": "Git Commit BE",
+			"type": "shell",
+			"command": "cd starlite_be; git commit -a -m 'Update'; git push",
 			"group": {
 				"kind": "build",
 				"isDefault": true
