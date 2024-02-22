@@ -27,7 +27,7 @@
 				"kind": "build",
 				"isDefault": true
 			}
-		}
+		},
 		{
 			"label": "Git Commit BE",
 			"type": "shell",
