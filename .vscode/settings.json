@@ -1,4 +1,0 @@
-{
-	"python.analysis.extraPaths": ["./starlite_be/*", "./starlite_fe/*"],
-	"css.format.enable": false
-}
